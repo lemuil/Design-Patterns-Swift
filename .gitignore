@@ -1,0 +1,19 @@
+## Build generated
+build/
+DerivedData
+
+## Various settings
+xcuserdata
+
+## Other
+*.xccheckout
+*.xcuserstate
+*.xcscheme
+Manifest.lock
+
+## Pods
+Pods/
+Podfile.lock
+
+## AppCode
+.idea/
