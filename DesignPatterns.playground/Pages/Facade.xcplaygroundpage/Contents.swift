@@ -103,3 +103,96 @@ final class ConcreteFacade: Facade {
 
 let simpleInterfaceToStartMachine = ConcreteFacade()
 simpleInterfaceToStartMachine.startMachine()
+
+
+// Repeat #1
+print("")
+
+final class Car {
+    enum State {
+        case notRunning
+        case ready
+        case running
+    }
+    
+    private(set) var state: State = .ready
+    
+    func startCar() {
+        print("Car is ready to start...")
+        state = .ready
+        state = .running
+        print("Car is running")
+    }
+    
+    func stopCar() {
+        state = .notRunning
+        print("Car stopped")
+    }
+}
+
+final class RemoteManager {
+    var isConnected: Bool = false
+    
+    func connectTerminal() {
+        print("Terminal is connecting...")
+        isConnected = true
+    }
+    
+    func disconnectTerminal() {
+        print("Terminal is disconnecting...")
+        isConnected = false
+    }
+    
+    func getStateRequest(for car: Car) -> Car.State {
+        print("Sending request for car state...")
+        return car.state
+    }
+    
+    func sendStartRequest(for car: Car) {
+        print("Sending request to start a car...")
+        car.startCar()
+    }
+    
+    func sendStopRequest(for car: Car) {
+        print("Sending request to stop a car...")
+        car.stopCar()
+    }
+}
+
+
+let car = Car()
+let remote = RemoteManager()
+
+if !remote.isConnected {
+    remote.connectTerminal()
+}
+
+if remote.getStateRequest(for: car) == .ready {
+    car.startCar()
+}
+
+// implement with DP Facade
+print("")
+
+protocol CarControl {
+    func startCar()
+}
+
+final class SimpleControl: CarControl {
+    func startCar() {
+        let car = Car()
+        let remote = RemoteManager()
+        
+        if !remote.isConnected {
+            remote.connectTerminal()
+        }
+        
+        if remote.getStateRequest(for: car) == .ready {
+            car.startCar()
+        }
+    }
+}
+
+let carControl = SimpleControl()
+carControl.startCar()
+
