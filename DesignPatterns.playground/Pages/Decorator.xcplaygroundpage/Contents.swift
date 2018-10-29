@@ -81,3 +81,74 @@ print("Capuccino ingredients - "+capuccino.ingredients())
 
 print("Capuccino with chocolate cost = "+String(capuccinoWithChocolate.cost()))
 print("Capuccino with chocolate ingredients - "+capuccinoWithChocolate.ingredients())
+
+
+// Repeat #1 - IceCream Example
+print("")
+
+protocol IceCreamProtocol {
+    func cost() -> Double
+    func ingredients() -> String
+}
+
+final class IceCream: IceCreamProtocol {
+    func cost() -> Double {
+        return 20
+    }
+    
+    func ingredients() -> String {
+        return "Ice Cream"
+    }
+}
+
+class IceCreamDecorator: IceCreamProtocol {
+    private var iceCream: IceCreamProtocol
+    
+    init(iceCream: IceCreamProtocol) {
+        self.iceCream = iceCream
+    }
+    
+    func cost() -> Double {
+        return iceCream.cost()
+    }
+    
+    func ingredients() -> String {
+        return iceCream.ingredients()
+    }
+}
+
+final class ChocolateIceCream: IceCreamDecorator {
+    override func cost() -> Double {
+        return super.cost() + 10
+    }
+    
+    override func ingredients() -> String {
+        return super.ingredients() + ", Chocolate"
+    }
+}
+
+final class VanilaIceCream: IceCreamDecorator {
+    override func cost() -> Double {
+        return super.cost() + 10
+    }
+    
+    override func ingredients() -> String {
+        return super.ingredients() + ", Vanila"
+    }
+}
+
+let iceCream = IceCream()
+let chocolateIceCream = ChocolateIceCream(iceCream: iceCream)
+let chocolateIceCreamWithVanila = VanilaIceCream(iceCream: chocolateIceCream)
+
+print(iceCream.ingredients())
+print(iceCream.cost())
+
+print(chocolateIceCream.ingredients())
+print(chocolateIceCream.cost())
+
+print(chocolateIceCreamWithVanila.ingredients())
+print(chocolateIceCreamWithVanila.cost())
+
+// Repeat #1 - Cocktail Example: 
+print("")
