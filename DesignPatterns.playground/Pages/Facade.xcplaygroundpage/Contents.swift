@@ -1,11 +1,13 @@
 
 /*
- Фасад позволяет скрыть более сложную систему, библиотеку или фреймворк за более простым интерфейсом.
+ Фасад (Facade) - структурный шаблон проектирования, который предоставляет простой интерфейс к сложной системе классов, библиотеке или фреймворку.
+ 
+ Фасад позволяет скрыть сложную систему, библиотеку или фреймворк за более простым интерфейсом.
  Этот интерфейс предоставляет унифицированный функционал для решения конкретной задачи.
  
  Фасад или простой интерфейс для работы со сложной системой, сам знает, что нужно сделать, чтобы получить нужный результат. Какие объекты нужно создать, какие связи между ними настроить и какие методы вызвать.
  
- Например, для получения результата нужно создать некоторое количество объектов, правильно настроить связи между ними и вызвать их методы в определенной последовательности. В итоге, логика реализации приложения тесно переплетается с особенностями реализации этих объектов. Появляеется сильная связанность. Введя дополнительный класс (фасад) с упрощенным интерфейсом, который позволяет достичь тот же самый результат, но обратившись только к одному методу решает нашу проблему.
+ Например, для получения результата нужно создать некоторое количество объектов, правильно настроить связи между ними и вызвать их методы в определенной последовательности. В итоге, логика реализации приложения тесно переплетается с особенностями реализации этих объектов. Появляется сильная связанность. Введя дополнительный класс (фасад) с упрощенным интерфейсом, который позволяет достичь тот же самый результат, но обратившись только к одному методу решает нашу проблему.
  
  Например, в Amazon – покупка с одного клика – как много систем задействовано в операции покупки? И проверка платежной карточки, и проверка Вашего адреса, проверка товара на складе, проверка или возможна доставка данного товара в данную точку мира… В результате очень много действий которые происходят всего по одному клику.
  */
@@ -31,7 +33,6 @@ final class Machine {
         print("Machine stopped")
     }
 }
-
 
 final class RequestManager {
     
@@ -105,7 +106,7 @@ let simpleInterfaceToStartMachine = ConcreteFacade()
 simpleInterfaceToStartMachine.startMachine()
 
 
-// Repeat #1
+// Repeat #1 - Car Example
 print("")
 
 final class Car {
@@ -159,7 +160,7 @@ final class RemoteManager {
     }
 }
 
-
+// Basic implemention
 let car = Car()
 let remote = RemoteManager()
 
@@ -196,3 +197,94 @@ final class SimpleControl: CarControl {
 let carControl = SimpleControl()
 carControl.startCar()
 
+// Repeat #2 - TV Example
+print("")
+
+final class TV {
+    enum State {
+        case on
+        case off
+    }
+    
+    private(set) var state: State = .off
+    
+    func turnOn() {
+        print("TV is turn on")
+        state = .on
+    }
+    
+    func turnOff() {
+        print("TV is turn off")
+        state = .off
+    }
+}
+
+final class Remote {
+    var isConnectedToTV: Bool = false
+    
+    func connectToTV() {
+        print("Send request to connect...")
+        isConnectedToTV = true
+    }
+    
+    func disconnectToTV() {
+        print("Send request to disconnect...")
+        isConnectedToTV = false
+    }
+    
+    func getStatus(for tv: TV) -> TV.State {
+        print("Send request about TV status...")
+        return tv.state
+    }
+    
+    func sendTurnOnRequest(for tv: TV) {
+        print("Sending request to turn TV on...")
+        tv.turnOn()
+    }
+    
+    func sendTurnOffRequest(for tv: TV) {
+        print("Sending request to turn TV off...")
+        tv.turnOff()
+    }
+}
+
+// Basic implemention
+let tv = TV()
+let remoteForTV = Remote()
+
+if !remoteForTV.isConnectedToTV {
+    remoteForTV.connectToTV()
+}
+
+if remoteForTV.getStatus(for: tv) == .off {
+    print("Try to turn TV on...")
+    tv.turnOn()
+    remoteForTV.disconnectToTV()
+}
+
+// Implement the same result with Facade
+print("")
+
+protocol ManageTV {
+    func turnOnTV()
+}
+
+final class RemoteFacade: ManageTV {
+    func turnOnTV() {
+        let tv = TV()
+        let remoteForTV = Remote()
+        
+        if !remoteForTV.isConnectedToTV {
+            remoteForTV.connectToTV()
+        }
+        
+        if remoteForTV.getStatus(for: tv) == .off {
+            print("Try to turn TV on...")
+            tv.turnOn()
+            remoteForTV.disconnectToTV()
+        }
+    }
+}
+
+let remoteInterface = RemoteFacade()
+remoteInterface.turnOnTV()
