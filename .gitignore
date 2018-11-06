@@ -17,3 +17,4 @@ Podfile.lock
 
 ## AppCode
 .idea/
+contents.xcworkspacedata
