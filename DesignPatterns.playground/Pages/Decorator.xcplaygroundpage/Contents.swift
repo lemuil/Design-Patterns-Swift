@@ -1,8 +1,9 @@
-
 /*
  Декоратор - структурный шаблон проектирования, который позволяет динамически добавлять объектам дополнительное поведение.
  
- Декоратор расширяет функциональность класса динамически и обеспечивает гибкую альтернативу наследования без определения подклассов. Декоратор по сути является обверткой вокруг класса с точно таким же интерфейсом. Поддерживает принцип открытости/закрытости.
+ Поддерживает принцип открытости/закрытости.
+ 
+ Декоратор расширяет функциональность класса динамически и обеспечивает гибкую альтернативу наследования без определения подклассов. Декоратор по сути является обверткой вокруг класса с точно таким же интерфейсом.
 */
 
 protocol Coffee {
@@ -86,30 +87,30 @@ print("Capuccino with chocolate ingredients - "+capuccinoWithChocolate.ingredien
 // Repeat #1 - IceCream Example
 print("")
 
-protocol IceCreamProtocol {
-    func cost() -> Double
+protocol IceCream {
+    func costs() -> Double
     func ingredients() -> String
 }
 
-final class IceCream: IceCreamProtocol {
-    func cost() -> Double {
-        return 20
+final class WhiteIceCream: IceCream {
+    func costs() -> Double {
+        return 25
     }
     
     func ingredients() -> String {
-        return "Ice Cream"
+        return "Plombir"
     }
 }
 
-class IceCreamDecorator: IceCreamProtocol {
-    private var iceCream: IceCreamProtocol
+class IceCreamDecorator: IceCream {
+    private var iceCream: IceCream
     
-    init(iceCream: IceCreamProtocol) {
+    init(iceCream: IceCream) {
         self.iceCream = iceCream
     }
     
-    func cost() -> Double {
-        return iceCream.cost()
+    func costs() -> Double {
+        return iceCream.costs()
     }
     
     func ingredients() -> String {
@@ -117,38 +118,35 @@ class IceCreamDecorator: IceCreamProtocol {
     }
 }
 
-final class ChocolateIceCream: IceCreamDecorator {
-    override func cost() -> Double {
-        return super.cost() + 10
+final class VanillaIceCream: IceCreamDecorator {
+    override func costs() -> Double {
+        return super.costs() + 10
     }
     
     override func ingredients() -> String {
-        return super.ingredients() + ", Chocolate"
+        return super.ingredients() + ", vanilla"
     }
 }
 
-final class VanilaIceCream: IceCreamDecorator {
-    override func cost() -> Double {
-        return super.cost() + 10
+final class FruitIceCream: IceCreamDecorator {
+    override func costs() -> Double {
+        return super.costs() + 20
     }
     
     override func ingredients() -> String {
-        return super.ingredients() + ", Vanila"
+        return super.ingredients() + ", fresh fruits"
     }
 }
 
-let iceCream = IceCream()
-let chocolateIceCream = ChocolateIceCream(iceCream: iceCream)
-let chocolateIceCreamWithVanila = VanilaIceCream(iceCream: chocolateIceCream)
+let plombir = WhiteIceCream()
+let vanillaIceCream = VanillaIceCream(iceCream: plombir)
+let fruitIceCream = FruitIceCream(iceCream: plombir)
 
-print(iceCream.ingredients())
-print(iceCream.cost())
+print("Plombir costs = "+String(plombir.costs()))
+print("Plombir ingredients "+plombir.ingredients())
 
-print(chocolateIceCream.ingredients())
-print(chocolateIceCream.cost())
+print("Vanilla costs = "+String(vanillaIceCream.costs()))
+print("Vanilla ingredients "+vanillaIceCream.ingredients())
 
-print(chocolateIceCreamWithVanila.ingredients())
-print(chocolateIceCreamWithVanila.cost())
-
-// Repeat #1 - Cocktail Example: 
-print("")
+print("Fruit ice cream costs = "+String(fruitIceCream.costs()))
+print("Fruit ice cream ingredients "+fruitIceCream.ingredients())
