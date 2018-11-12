@@ -1,34 +1,34 @@
-import UIKit
+/*
+ Стратегия - поведенческий шаблон проектирования, который определяет семейство схожих алгоритмов и помещает каждый из них в собственный класс, обеспечивая их взаимозаменяемости.
+ 
+ Позволяет использовать композицию, вместо наследования. Композиция - это связь типа “имеет”, а наследование - связь типа “является”.
+*/
 
-final class Filter {
-    var filterStrategy: FilterStrategy?
-    
-    func applyFilter(to image: UIImage) {
-        filterStrategy?.process(image: image)
-    }
-}
+import UIKit
 
 protocol FilterStrategy {
     func process(image: UIImage) -> UIImage
 }
 
+final class Filter {
+    var concreteFilter: FilterStrategy?
+    
+    func applyFilter(image: UIImage) {
+        concreteFilter?.process(image: image)
+        print("Filter apllied")
+    }
+}
+
 final class SepiaFilter: FilterStrategy {
     func process(image: UIImage) -> UIImage {
-        print("Apply SEPIA filter to image")
+        print("Proccessing SEPIA filter...")
         return image
     }
 }
 
-final class BWFilter: FilterStrategy {
+final class HighContrastFilter: FilterStrategy {
     func process(image: UIImage) -> UIImage {
-        print("Apply B&W filter to image")
-        return image
-    }
-}
-
-final class DistortionFilter: FilterStrategy {
-    func process(image: UIImage) -> UIImage {
-        print("Apply DISTORTION filter to image")
+        print("Proccessing HIGH CONTRAST filter...")
         return image
     }
 }
@@ -36,11 +36,8 @@ final class DistortionFilter: FilterStrategy {
 let filter = Filter()
 let image = UIImage()
 
-filter.filterStrategy = SepiaFilter()
-filter.applyFilter(to: image)
+filter.concreteFilter = HighContrastFilter()
+filter.applyFilter(image: image)
 
-filter.filterStrategy = BWFilter()
-filter.applyFilter(to: image)
-
-filter.filterStrategy = DistortionFilter()
-filter.applyFilter(to: image)
+filter.concreteFilter = SepiaFilter()
+filter.applyFilter(image: image)
